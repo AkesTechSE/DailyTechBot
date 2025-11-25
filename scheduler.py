@@ -1,62 +1,36 @@
 """
-Scheduler Module
-Handles automated daily posting at 9:00 AM.
+Scheduler for DailyTechBot
+Uses schedule + asyncio to run async daily posts
 """
 
-import os
-import schedule
-import time
+import asyncio
 import logging
 from datetime import datetime
-from dotenv import load_dotenv
+import schedule
 from bot import TechNewsBot
+import os
 
-load_dotenv()
-
-logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    level=logging.INFO
-)
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+POST_TIME = os.getenv("POST_TIME", "09:00")
 
-def post_daily_news():
-    """Job function to post daily tech news."""
+async def job(bot=None):
+    """Async job to post daily digest"""
+    bot = bot or TechNewsBot()
     logger.info(f"Starting scheduled job at {datetime.now()}")
-    
-    try:
-        bot = TechNewsBot()
-        posted = bot.post_daily_digest(num_articles=10)
-        logger.info(f"Scheduled job completed. Posted {posted} articles.")
-    except Exception as e:
-        logger.error(f"Error in scheduled job: {e}")
+    posted = await bot.post_daily_digest(num_articles=5)
+    logger.info(f"Scheduled job completed. Posted {posted} articles.")
 
+async def run_scheduler_async():
+    """Run the scheduler asynchronously"""
+    bot_instance = TechNewsBot()
+    schedule.every().day.at(POST_TIME).do(lambda: asyncio.create_task(job(bot_instance)))
+    logger.info(f"Scheduler started. Daily posts scheduled for {POST_TIME}")
 
-def run_scheduler():
-    """Run the scheduler to post news daily at configured time."""
-    post_time = os.getenv('POST_TIME', '09:00')
-    
-    logger.info(f"Scheduler started. Daily posts scheduled for {post_time}")
-    
-    # Schedule the daily job
-    schedule.every().day.at(post_time).do(post_daily_news)
-    
-    # Run immediately on startup (optional - comment out if not desired)
-    logger.info("Running initial post on startup...")
-    post_daily_news()
-    
-    # Keep the scheduler running
+    # Initial post on startup
+    await job(bot_instance)
+
     while True:
         schedule.run_pending()
-        time.sleep(60)  # Check every minute
-
-
-if __name__ == "__main__":
-    logger.info("Starting DailyTechBot Scheduler...")
-    
-    try:
-        run_scheduler()
-    except KeyboardInterrupt:
-        logger.info("Scheduler stopped by user")
-    except Exception as e:
-        logger.error(f"Scheduler error: {e}")
+        await asyncio.sleep(30)

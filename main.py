@@ -4,7 +4,8 @@ Main entry point for DailyTechBot
 
 import sys
 import logging
-from scheduler import run_scheduler
+import asyncio
+from scheduler import run_scheduler_async
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -12,15 +13,13 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-
-def main():
-    """Main function to start the bot."""
+async def main():
     logger.info("=" * 50)
     logger.info("DailyTechBot - Tech News Telegram Channel")
     logger.info("=" * 50)
-    
+
     try:
-        run_scheduler()
+        await run_scheduler_async()
     except KeyboardInterrupt:
         logger.info("\nBot stopped by user")
         sys.exit(0)
@@ -28,6 +27,5 @@ def main():
         logger.error(f"Fatal error: {e}")
         sys.exit(1)
 
-
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

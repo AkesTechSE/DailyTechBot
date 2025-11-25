@@ -28,7 +28,7 @@ ENV/
 # Environment variables
 .env
 
-# IDE
+# IDE settings
 .vscode/
 .idea/
 *.swp
@@ -38,10 +38,10 @@ ENV/
 # Logs
 *.log
 
-# Database
+# Database files
 *.db
 *.sqlite3
 
-# OS
+# OS-generated files
 .DS_Store
 Thumbs.db
