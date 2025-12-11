@@ -29,4 +29,4 @@ jobs:
         TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
       run: |
-        python -c "from bot import TechNewsBot; bot = TechNewsBot(); bot.post_daily_digest(num_articles=10)"
+        python -c "from bot import TechNewsBot; bot = TechNewsBot(); bot.post_daily_digest(num_articles=5)"
