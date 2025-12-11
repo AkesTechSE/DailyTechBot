@@ -11,3 +11,4 @@ services:
       - TZ=UTC
     volumes:
       - ./logs:/app/logs
+
