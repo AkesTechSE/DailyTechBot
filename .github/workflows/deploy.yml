@@ -27,5 +27,11 @@ jobs:
       run: |
         python news_fetcher.py
     
-    # Add deployment steps here based on your hosting platform
-    # For example: Docker deployment, cloud deployment, etc.
+    - name: Test bot connection
+      env:
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
+      run: |
+        python -c "from bot import TechNewsBot; bot = TechNewsBot(); bot.test_connection()"
+    
+    # Optional: Add deployment steps here, e.g., Docker or cloud deployment
