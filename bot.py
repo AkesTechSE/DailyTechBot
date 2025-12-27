@@ -34,20 +34,20 @@ class TechNewsBot:
         message += f"🔗 [Read full article]({link})"
         return message
 
-    def post_article(self, article):
+    async def post_article(self, article):
         try:
             message = self.format_article(article)
             image_url = article.get('image_url', '')
 
             if image_url:
-                self.bot.send_photo(
+                await self.bot.send_photo(
                     chat_id=self.channel_id,
                     photo=image_url,
                     caption=message,
                     parse_mode=ParseMode.MARKDOWN
                 )
             else:
-                self.bot.send_message(
+                await self.bot.send_message(
                     chat_id=self.channel_id,
                     text=message,
                     parse_mode=ParseMode.MARKDOWN,
@@ -63,28 +63,28 @@ class TechNewsBot:
             logger.error(f"Unexpected error posting article: {e}")
             return False
 
-    def post_daily_digest(self, num_articles=5):
+    async def post_daily_digest(self, num_articles=5):
         logger.info("Posting daily digest...")
         header = "🚀 *Daily Tech Insights* 🚀\n\nGood morning! Here are today's top tech stories:\n━━━━━━━━━━━━━━━━━━━━━━"
-        self.bot.send_message(chat_id=self.channel_id, text=header, parse_mode=ParseMode.MARKDOWN)
+        await self.bot.send_message(chat_id=self.channel_id, text=header, parse_mode=ParseMode.MARKDOWN)
 
         articles = self.news_fetcher.get_daily_digest(num_articles=num_articles)
         posted_count = 0
         for article in articles:
-            if self.post_article(article):
+            if await self.post_article(article):
                 posted_count += 1
 
         footer = "✨ That's all for today! Stay curious and keep innovating! 💻\n\n📱 Follow us for daily tech updates!"
-        self.bot.send_message(chat_id=self.channel_id, text=footer, parse_mode=ParseMode.MARKDOWN)
+        await self.bot.send_message(chat_id=self.channel_id, text=footer, parse_mode=ParseMode.MARKDOWN)
 
         logger.info(f"Daily digest completed. Posted {posted_count}/{len(articles)} articles.")
         return posted_count
 
-    def test_connection(self):
+    async def test_connection(self):
         try:
-            bot_info = self.bot.get_me()
+            bot_info = await self.bot.get_me()
             logger.info(f"Bot connected: @{bot_info.username}")
-            self.bot.send_message(chat_id=self.channel_id, text="🤖 Bot connection test successful!")
+            await self.bot.send_message(chat_id=self.channel_id, text="🤖 Bot connection test successful!")
             return True
         except TelegramError as e:
             logger.error(f"Connection test failed: {e}")

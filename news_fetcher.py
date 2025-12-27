@@ -14,9 +14,11 @@ class NewsFetcher:
     """Fetches tech news from various sources."""
 
     RSS_FEEDS = {
-        'TechCrunch': 'https://techcrunch.com/feed/',
-        'The Verge': 'https://www.theverge.com/rss/index.xml',
-        'Wired': 'https://www.wired.com/feed/rss',
+        'Forex Factory': 'https://www.forexfactory.com/rss/news',
+        'Investing.com Forex': 'https://www.investing.com/rss/news_1.rss',
+        'DailyFX': 'https://www.dailyfx.com/feeds/market-news',
+        'FXStreet': 'https://www.fxstreet.com/rss/news',
+        'Reuters Markets': 'https://www.reuters.com/markets/rss',
     }
 
     def __init__(self, max_articles=5):
