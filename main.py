@@ -1,16 +1,18 @@
 """
-Main entry point for DailyTechBot
-Runs the scheduler for daily posts
+Main entry point for DailyTechBot.
+Starts the async scheduler loop that posts the daily digest.
 """
 
+import asyncio
 import logging
-from scheduler import bot  # import bot instance from scheduler
+from scheduler import main as start_scheduler
 
 logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    level=logging.INFO
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    level=logging.INFO,
 )
 logger = logging.getLogger(__name__)
+
 
 if __name__ == "__main__":
     logger.info("=" * 50)
@@ -18,8 +20,7 @@ if __name__ == "__main__":
     logger.info("=" * 50)
 
     try:
-        # The scheduler loop runs in scheduler.py
-        import scheduler  # ensures the scheduler loop runs
+        asyncio.run(start_scheduler())
     except KeyboardInterrupt:
         logger.info("Bot stopped by user")
     except Exception as e:
